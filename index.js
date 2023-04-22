@@ -15,10 +15,12 @@ const telegramChatId = process.env.TELEGRAM_CHAT_ID;
 const ip2LocationID = process.env.IP_2_LOCATION_ID;
 
 app.get("/", async (req, res) => {
-  const ipApiResponse = await axios("https://ipapi.co/json/");
+  const ipApiResponse = await axios("https://ipapi.co/json/").catch(
+    (err) => {}
+  );
   const locationApiResponse = await axios(
     `https://api.ip2location.io/?key=${ip2LocationID}&ip=${ipApiResponse.data.ip}&format=json`
-  );
+  ).catch((err) => {});
   const options = {
     method: "POST",
     url: `https://api.telegram.org/bot${telegramBotAPiKey}/sendMessage`,
@@ -40,7 +42,7 @@ app.get("/", async (req, res) => {
       chat_id: `${telegramChatId}`,
     },
   };
-  const telegramBot = await axios.request(options);
+  const telegramBot = await axios.request(options).catch((err) => {});
 
   res.json();
 });
